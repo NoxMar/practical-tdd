@@ -25,4 +25,19 @@ public class DivisionTest
         // Assert
         Assert.Equal(expectedQuotient, actualQuotient);
     }
+
+    [Fact]
+    public void Divide_ZeroDivisor_DivideByZeroException()
+    {
+        // Arrange
+        int dividend = 10;
+        int divisor = 0;
+        
+        // Act
+        Exception? e = Record.Exception(() 
+            => Division.Divide(dividend, divisor));
+        
+        // Assert
+        Assert.IsType<DivideByZeroException>(e);
+    }
 }
