@@ -40,4 +40,19 @@ public class DivisionTest
         // Assert
         Assert.IsType<DivideByZeroException>(e);
     }
+
+    [Theory]
+    [InlineData(  int.MaxValue ,  int.MinValue , -0.999999999534 )]
+    [InlineData( -int.MaxValue ,  int.MinValue ,  0.999999999534 )]
+    [InlineData(  int.MinValue ,  int.MaxValue , -1.000000000466 )]
+    [InlineData(  int.MinValue , -int.MaxValue ,  1.000000000466 )]
+    public void Divide_ExtremeInput_CorrectCalculation(
+        int dividend, int divisor, decimal expectedQuotient)
+    {
+        // Arrange
+        // Act
+        decimal actualQuotient = Division.Divide(dividend, divisor);
+        // Assert
+        Assert.Equal(expectedQuotient, actualQuotient, 12);
+    }
 }
