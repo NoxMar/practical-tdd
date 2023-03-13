@@ -43,4 +43,12 @@ public class WeatherForecastController : ControllerBase
             };
         }).ToArray();
     }
+
+    [HttpGet("ConvertCToF")]
+    public double ConvertCToF(double c)
+    {
+        var f = c * (9d / 5d) + 32;
+        _logger.LogInformation("conversion requested");
+        return f;
+    }
 }
