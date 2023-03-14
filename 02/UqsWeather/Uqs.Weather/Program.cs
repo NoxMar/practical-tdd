@@ -1,4 +1,5 @@
 using AdamTibi.OpenWeather;
+using Uqs.Weather.Wrappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,9 @@ builder.Services.AddSingleton<IClient>(_ =>
     HttpClient httpClient = new();
     return new Client(apiKey, httpClient);
 });
-builder.Services.AddControllers();
+builder.Services.AddSingleton<INowWrapper>(_ => new NowWrapper());
+builder.Services.
+    AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

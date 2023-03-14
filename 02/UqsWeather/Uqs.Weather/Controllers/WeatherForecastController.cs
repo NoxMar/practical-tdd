@@ -1,5 +1,6 @@
 using AdamTibi.OpenWeather;
 using Microsoft.AspNetCore.Mvc;
+using Uqs.Weather.Wrappers;
 
 namespace Uqs.Weather.Controllers;
 
@@ -26,10 +27,12 @@ public class WeatherForecastController : ControllerBase
     
     private readonly ILogger<WeatherForecastController> _logger;
     private readonly IClient _client;
-    public WeatherForecastController( IClient client, ILogger<WeatherForecastController> logger)
+    private readonly INowWrapper _nowWrapper;
+    public WeatherForecastController( IClient client, ILogger<WeatherForecastController> logger, INowWrapper nowWrapper)
     {
         _client = client;
         _logger = logger;
+        _nowWrapper = nowWrapper;
     }
 
     [HttpGet("GetRandomWeatherForecast")]
@@ -40,7 +43,7 @@ public class WeatherForecastController : ControllerBase
             var temperatureC = Random.Shared.Next(-20, 55);
             return new WeatherForecast
             {
-                Date = DateTime.Now.AddDays(index),
+                Date = _nowWrapper.Now.AddDays(index),
                 TemperatureC = temperatureC,
                 Summary = MapFeelToTemp(temperatureC)
             };
