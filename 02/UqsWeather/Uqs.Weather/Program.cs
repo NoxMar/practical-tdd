@@ -12,6 +12,7 @@ builder.Services.AddSingleton<IClient>(_ =>
     return new Client(apiKey, httpClient);
 });
 builder.Services.AddSingleton<INowWrapper>(_ => new NowWrapper());
+builder.Services.AddTransient<IRandomWrapper>(_ => new RandomWrapper());
 builder.Services.
     AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

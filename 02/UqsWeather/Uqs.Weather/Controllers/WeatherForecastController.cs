@@ -28,11 +28,13 @@ public class WeatherForecastController : ControllerBase
     private readonly ILogger<WeatherForecastController> _logger;
     private readonly IClient _client;
     private readonly INowWrapper _nowWrapper;
-    public WeatherForecastController( IClient client, ILogger<WeatherForecastController> logger, INowWrapper nowWrapper)
+    private readonly IRandomWrapper _randomWrapper;
+    public WeatherForecastController( IClient client, ILogger<WeatherForecastController> logger, INowWrapper nowWrapper, IRandomWrapper randomWrapper)
     {
         _client = client;
         _logger = logger;
         _nowWrapper = nowWrapper;
+        _randomWrapper = randomWrapper;
     }
 
     [HttpGet("GetRandomWeatherForecast")]
@@ -40,7 +42,7 @@ public class WeatherForecastController : ControllerBase
     {
         return Enumerable.Range(1, 5).Select(index =>
         {
-            var temperatureC = Random.Shared.Next(-20, 55);
+            var temperatureC = _randomWrapper.Next(-20, 55);
             return new WeatherForecast
             {
                 Date = _nowWrapper.Now.AddDays(index),
