@@ -1,3 +1,4 @@
+using AdamTibi.OpenWeather;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Uqs.Weather.Controllers;
@@ -6,6 +7,7 @@ namespace Uqs.Weather.Controllers;
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
 {
+    private const int FORECAST_DAYS = 5;
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -23,10 +25,11 @@ public class WeatherForecastController : ControllerBase
     }
     
     private readonly ILogger<WeatherForecastController> _logger;
-
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    private readonly IConfiguration _config;
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration config)
     {
         _logger = logger;
+        _config = config;
     }
 
     [HttpGet("GetRandomWeatherForecast")]
@@ -42,6 +45,31 @@ public class WeatherForecastController : ControllerBase
                 Summary = MapFeelToTemp(temperatureC)
             };
         }).ToArray();
+    }
+    
+    [HttpGet("GetRealWeatherForecast")]
+    public async Task<IEnumerable<WeatherForecast>> GetReal()
+    {
+        const decimal GREENWICH_LAT = 51.4810m;
+        const decimal GREENWICH_LON = 0.0052m;
+        string apiKey = _config["OpenWeather:Key"];
+        HttpClient httpClient = new();
+        Client openWeatherClient = new(apiKey, httpClient);
+        OneCallResponse res = await openWeatherClient.OneCallAsync
+        (GREENWICH_LAT, GREENWICH_LON, new [] {
+            Excludes.Current, Excludes.Minutely,
+            Excludes.Hourly, Excludes.Alerts }, Units.Metric);
+
+        WeatherForecast[] wfs = new WeatherForecast[FORECAST_DAYS];
+        for (int i = 0; i < wfs.Length; i++)
+        {
+            var wf = wfs[i] = new();
+            wf.Date = res.Daily[i + 1].Dt;
+            var forecastedTemp = res.Daily[i + 1].Temp.Day;
+            wf.TemperatureC = (int)Math.Round(forecastedTemp);
+            wf.Summary = MapFeelToTemp(wf.TemperatureC);
+        }
+        return wfs;
     }
 
     [HttpGet("ConvertCToF")]
