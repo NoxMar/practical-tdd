@@ -25,14 +25,12 @@ public class WeatherForecastController : ControllerBase
         return summariesIndex >= Summaries.Length ? Summaries.Last() : Summaries[summariesIndex];
     }
     
-    private readonly ILogger<WeatherForecastController> _logger;
     private readonly IClient _client;
     private readonly INowWrapper _nowWrapper;
     private readonly IRandomWrapper _randomWrapper;
-    public WeatherForecastController( IClient client, ILogger<WeatherForecastController> logger, INowWrapper nowWrapper, IRandomWrapper randomWrapper)
+    public WeatherForecastController( IClient client, INowWrapper nowWrapper, IRandomWrapper randomWrapper)
     {
         _client = client;
-        _logger = logger;
         _nowWrapper = nowWrapper;
         _randomWrapper = randomWrapper;
     }
@@ -75,10 +73,10 @@ public class WeatherForecastController : ControllerBase
     }
 
     [HttpGet("ConvertCToF")]
-    public double ConvertCToF(double c)
+    public double ConvertCToF(double c, [FromServices] ILogger<WeatherForecastController> logger)
     {
         var f = c * (9d / 5d) + 32;
-        _logger.LogInformation("conversion requested");
+        logger.LogInformation("conversion requested");
         return f;
     }
 }
