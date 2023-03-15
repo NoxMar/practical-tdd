@@ -1,4 +1,5 @@
 using AdamTibi.OpenWeather;
+using Uqs.Weather;
 using Uqs.Weather.Wrappers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add the OpenWeather API client service
 builder.Services.AddSingleton<IClient>(_ =>
 {
+    var isLoadTest = bool.Parse(builder.Configuration["LoadTest:IsActive"]);
+    if (isLoadTest)
+    {
+        return new ClientStub();
+    }
     var apiKey = builder.Configuration["OpenWeather:Key"]!;
     HttpClient httpClient = new();
     return new Client(apiKey, httpClient);
