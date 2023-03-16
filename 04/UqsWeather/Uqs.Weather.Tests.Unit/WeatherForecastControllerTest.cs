@@ -142,14 +142,34 @@ public class WeatherForecastControllerTest
     public async Task GetReal_RequestToOpenWeahter_MetricUntiIsUsed()
     {
         // Arrange
-        Stubs.ClientStub clientStub = new(default(DateTime), new double[] { 1, 2, 3, 4, 5, 6, 7 });
-        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        var today = new DateTime(2022, 1, 1);
+        var readWeatherTemps = new[] { 2, 3.3, 4, 5.5, 6, 7.7, 8 };
+        var clientMock = Substitute.For<IClient>();
+        clientMock.OneCallAsync(Arg.Any<decimal>(), Arg.Any<decimal>(),
+                Arg.Any<IEnumerable<Excludes>>(), Arg.Any<Units>())
+            .Returns(_ =>
+            {
+                const int days = 7;
+                OneCallResponse res = new();
+                res.Daily = new Daily[days];
+                for (int i = 0; i < days; i++)
+                {
+                    res.Daily[i] = new()
+                    {
+                        Dt = today.AddDays(i),
+                        Temp = new() { Day = readWeatherTemps.ElementAt(i) }
+                    };
+                }
+
+                return Task.FromResult(res);
+            });
+        WeatherForecastController sut = new(null!, clientMock, null!, null!);
         
         // Act
         var _ = await sut.GetReal();
         
         // Assert
-        Assert.NotNull(clientStub.LastUnitSpy);
-        Assert.Equal(Units.Metric, clientStub.LastUnitSpy!.Value);
+        await clientMock.Received().OneCallAsync(Arg.Any<decimal>(), Arg.Any<decimal>(),
+            Arg.Any<IEnumerable<Excludes>>(), Arg.Is<Units>(u => u == Units.Metric));
     }
 }
