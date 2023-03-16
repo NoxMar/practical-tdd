@@ -1,3 +1,4 @@
+using AdamTibi.OpenWeather;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uqs.Weather.Controllers;
 
@@ -117,5 +118,20 @@ public class WeatherForecastControllerTest
         
         // Assert
         Assert.Equal(new DateTime(2022, 1, 2), wfs.First().Date);
+    }
+
+    [Fact]
+    public async Task GetReal_RequestToOpenWeahter_MetricUntiIsUsed()
+    {
+        // Arrange
+        Stubs.ClientStub clientStub = new(default(DateTime), new double[] { 1, 2, 3, 4, 5, 6, 7 });
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        
+        // Act
+        var _ = await sut.GetReal();
+        
+        // Assert
+        Assert.NotNull(clientStub.LastUnitSpy);
+        Assert.Equal(Units.Metric, clientStub.LastUnitSpy!.Value);
     }
 }

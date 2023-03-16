@@ -4,6 +4,7 @@ namespace Uqs.Weather.Tests.Unit.Stubs;
 
 public class ClientStub : IClient
 {
+    public Units? LastUnitSpy { get; private set; } = null;
     private readonly DateTime _now;
     private readonly IEnumerable<double> _sevenDayTemps;
 
@@ -15,6 +16,7 @@ public class ClientStub : IClient
 
     public Task<OneCallResponse> OneCallAsync(decimal latitude, decimal longitude, IEnumerable<Excludes> excludes, Units unit)
     {
+        LastUnitSpy = unit;
         const int days = 7;
         OneCallResponse res = new();
         res.Daily = new Daily[days];
