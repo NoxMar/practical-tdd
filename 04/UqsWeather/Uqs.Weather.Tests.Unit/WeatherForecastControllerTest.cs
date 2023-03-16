@@ -29,12 +29,93 @@ public class WeatherForecastControllerTest
         var today = new DateTime(2022, 1, 1);
         var readWeatherTemps = new[] { 2, nextDayTemp, 4, 5.5, 6, 7.7, 8 };
         Stubs.ClientStub clientStub = new(today, readWeatherTemps);
-        WeatherForecastController controller = new(null!, clientStub, null!, null!);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
         
         // Act
-        IEnumerable<WeatherForecast> sut = await controller.GetReal();
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
         
         // Assert
-        Assert.Equal(3, sut.First().TemperatureC);
+        Assert.Equal(3, wfs.First().TemperatureC);
+    }
+
+    [Fact]
+    public async Task GetReal_5DaysForecastStartingNextDay_WF5ThDayIsRealWeather6ThDay()
+    {
+        // Arrange
+        var realWeatherTemps = new[] { 2, 3, 4, 5, 6.6, 7.7, 8 };
+        Stubs.ClientStub clientStub = new(DateTime.Today, realWeatherTemps);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        
+        // Act
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
+        
+        // Assert
+        Assert.Equal(8, wfs.Last().TemperatureC);
+    }
+
+    [Fact]
+    public async Task GetReal_ForecastingFor5DaysOnly_WFHas5Days()
+    {
+        // Arrange
+        var realWeatherTemps = new[] { 2, 3, 4, 5, 6.6, 7, 8.8 };
+        Stubs.ClientStub clientStub = new(DateTime.Today, realWeatherTemps);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+
+        // Act
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
+        
+        // Assert
+        Assert.Equal(5, wfs.Count());
+    }
+    
+    [Theory]
+    [InlineData(2.2 , 2)]
+    [InlineData(2.5 , 2)]
+    [InlineData(2.51, 3)]
+    [InlineData(2.8 , 3)]
+    public async Task GetReal_WFDoesntConsiderDecimal_RealWeatherTempRoundedProperly(double realTemp, int expected)
+    {
+        // Arrange
+        var realWeatherTemps = new[] { 1, realTemp, 3, 4, 5, 6, 7.7 };
+        Stubs.ClientStub clientStub = new(DateTime.Today, realWeatherTemps);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        
+        // Act
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
+        
+        // Assert
+        Assert.Equal(expected, wfs.First().TemperatureC);
+    }
+
+    [Fact]
+    public async Task GetReal_TodayWeatherAnd6DaysForecastReceived_RealDateMatchesNextDay()
+    {
+        // Arrange
+        var realWeatherTemps = new[] { 1, 2, 3, 4, 5, 6, 7.7 };
+        DateTime today = new(2022, 1, 1);
+        Stubs.ClientStub clientStub = new(today, realWeatherTemps);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        
+        // Act
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
+        
+        // Assert
+        Assert.Equal(new DateTime(2022, 1, 2), wfs.First().Date);
+    }
+    
+    [Fact]
+    public async Task GetReal_TodayWeatherAnd6DaysForecastReceived_RealDateMatchesLastDay()
+    {
+        // Arrange
+        var realWeatherTemps = new[] { 1, 2, 3, 4, 5, 6, 7.7 };
+        DateTime today = new(2022, 1, 1);
+        Stubs.ClientStub clientStub = new(today, realWeatherTemps);
+        WeatherForecastController sut = new(null!, clientStub, null!, null!);
+        
+        // Act
+        IEnumerable<WeatherForecast> wfs = await sut.GetReal();
+        
+        // Assert
+        Assert.Equal(new DateTime(2022, 1, 2), wfs.First().Date);
     }
 }
