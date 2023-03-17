@@ -9,9 +9,9 @@ public class ProfileService
             throw new ArgumentNullException(nameof(username), "Null");
         }
 
-        if (username.Length < 8 || username.Length > 12)
+        if (username.Length is < 8 or > 12)
         {
-            throw new ArgumentOutOfRangeException("username", "Length");
+            throw new ArgumentOutOfRangeException(nameof(username), "Length");
         }
     }
 }
