@@ -6,7 +6,7 @@ public class ProfileService
     {
         if (username is null)
         {
-            throw new ArgumentNullException("username", "Null");
+            throw new ArgumentNullException(nameof(username), "Null");
         }
     }
 }
