@@ -44,7 +44,7 @@ public class ProfileServiceTests
         Assert.StartsWith("Length", ex.Message);
     }
 
-    [Theory(Skip = "TODO")]
+    [Theory]
     [InlineData("Letter_123", true)]
     [InlineData("!The_Start", false)]
     [InlineData("InThe@Middle", false)]
