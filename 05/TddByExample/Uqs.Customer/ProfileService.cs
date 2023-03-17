@@ -4,6 +4,9 @@ namespace Uqs.Customer;
 
 public class ProfileService
 {
+    
+    private const string AlphanumericUnderscoreRegex = @"^[a-zA-Z0-9_]+$";
+    private static readonly Regex UsernameRegex = new (AlphanumericUnderscoreRegex, RegexOptions.Compiled);
     public void ChangeUsername(string username)
     {
         if (username is null)
@@ -16,9 +19,9 @@ public class ProfileService
             throw new ArgumentOutOfRangeException(nameof(username), "Length");
         }
 
-        if (!Regex.Match(username, @"^[a-zA-Z0-9_]+$").Success)
+        if (!UsernameRegex.Match(username).Success)
         {
-            throw new ArgumentOutOfRangeException("username", "InvalidChars");
+            throw new ArgumentOutOfRangeException(nameof(username), "InvalidChars");
         }
     }
 }
