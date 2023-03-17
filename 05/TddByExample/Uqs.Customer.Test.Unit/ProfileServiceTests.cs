@@ -17,7 +17,7 @@ public class ProfileServiceTests
         Assert.StartsWith("Null", ex.Message);
     }
 
-    [Theory(Skip = "TODO")]
+    [Theory]
     [InlineData("AnameOf8", true)]
     [InlineData("NameOfChar12", true)]
     [InlineData("AnameOfChar13", false)]
