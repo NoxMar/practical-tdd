@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Uqs.AppointmentBooking.Domain.Database;
 using Uqs.AppointmentBooking.Domain.Report;
@@ -17,8 +18,14 @@ public class SlotService
         _settings = settings.Value;
     }
 
-    public Task<Slots> GetAvailableSlotsForEmployee(int serviceId)
+    public async Task<Slots> GetAvailableSlotsForEmployee(int serviceId)
     {
-        throw new NotImplementedException();
+        var service = await _context.Services!
+            .FirstOrDefaultAsync(s => s.Id == serviceId);
+        if (service is null)
+        {
+            throw new ArgumentException("Record for service not found", nameof(serviceId));
+        }
+        return null!;
     }
 }

@@ -12,7 +12,7 @@ public class SlotsServiceTests
     private readonly INowService _nowService = Substitute.For<INowService>();
     private readonly IOptions<ApplicationSettings> _settings = Substitute.For<IOptions<ApplicationSettings>>();
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetAvailableSlotsForEmployee_ServiceIdNotFound_ArgumentException()
     {
         // Arrange
