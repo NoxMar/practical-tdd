@@ -23,6 +23,25 @@ public class ServicesServiceTests : IDisposable
         Assert.Empty(actual);
     }
 
+    [Fact(Skip = "TODO")]
+    public async Task GetActiveServices_TwoActiveOneInactiveServices_TwoServices()
+    {
+        // Arrange
+        var ctx = _ctxBuilder
+            .WithSingleService(true)
+            .WithSingleService(true)
+            .WithSingleService(false)
+            .Build();
+        _sut = new ServicesService(ctx);
+        var expected = 2;
+        
+        // Act
+        var actual = await _sut.GetActiveServices();
+        
+        // Asser
+        Assert.Equal(expected, actual.Count());
+    }
+
     public void Dispose()
     {
         _ctxBuilder.Dispose();
