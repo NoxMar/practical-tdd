@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Uqs.AppointmentBooking.Domain.DomainObjects;
 using Uqs.AppointmentBooking.Domain.Database;
 
@@ -12,7 +13,6 @@ public class ServicesService
     }
 
     public async Task<IEnumerable<Service>> GetActiveServices()
-    {
-        throw new NotImplementedException();
-    }
+        => await _context.Services!
+            .ToArrayAsync();
 }

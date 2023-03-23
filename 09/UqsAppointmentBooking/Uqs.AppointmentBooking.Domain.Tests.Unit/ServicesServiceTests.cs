@@ -9,7 +9,7 @@ public class ServicesServiceTests : IDisposable
 
     private ServicesService? _sut;
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetActiveServices_NoServiceInTheSystem_NoServices()
     {
         // Arrange
