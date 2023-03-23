@@ -14,5 +14,6 @@ public class ServicesService
 
     public async Task<IEnumerable<Service>> GetActiveServices()
         => await _context.Services!
+            .Where(s => s.IsActive)
             .ToArrayAsync();
 }

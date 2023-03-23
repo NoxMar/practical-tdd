@@ -23,7 +23,7 @@ public class ServicesServiceTests : IDisposable
         Assert.Empty(actual);
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetActiveServices_TwoActiveOneInactiveServices_TwoServices()
     {
         // Arrange
