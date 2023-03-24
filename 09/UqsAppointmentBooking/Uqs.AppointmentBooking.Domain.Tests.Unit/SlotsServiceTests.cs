@@ -86,4 +86,47 @@ public class SlotsServiceTests
             Assert.Equal(DateTime.Parse(expectedTimes[idx]), times[idx]);
         }
     }
+
+    [Theory(Skip = "TODO")]
+    [InlineData("2022-10-03 09:00:00", "2022-10-03 11:10:00", 0)]
+    [InlineData("2022-10-03 09:30:00", "2022-10-03 11:10:00", 0)]
+    [InlineData("2022-10-03 09:00:00", "2022-10-03 10:45:00", 0)]
+    [InlineData("2022-10-03 09:35:00", "2022-10-03 11:10:00", 1, "2022-10-03 09:00:00")]
+    [InlineData("2022-10-03 09:40:00", "2022-10-03 11:10:00", 2, "2022-10-03 09:00:00", "2022-10-03 09:05:00")]
+    [InlineData("2022-10-03 09:00:00", "2022-10-03 10:30:00", 2, "2022-10-03 10:35:00", "2022-10-03 10:40:00")]
+    [InlineData("2022-10-03 09:35:00", "2022-10-03 10:30:00", 3, "2022-10-03 09:00:00", "2022-10-03 10:35:00", "2022-10-03 10:40:00")]
+    public async Task GetAvailableSlotsForEmployee_OneShiftWithVaryingAppointments_VaryingSlots(
+        string appointmentStartStr, string appointmentEndStr, int totalSlots, params string[] expectedTimes)
+    {
+        // Arrange
+        DateTime appointmentFrom = new(2022, 10, 3, 7, 0, 0); // 7:00
+        _nowService.Now.Returns(appointmentFrom);
+        DateTime shiftFrom = new(2022, 10, 3, 9, 0, 0); // 9:00
+        DateTime shiftTo = new(2022, 10, 3, 11, 10, 0); // 11:10
+
+        DateTime appointmentStart = DateTime.Parse(appointmentStartStr);
+        DateTime appointmentEnd = DateTime.Parse(appointmentEndStr);
+
+        var ctx = _ctxBuilder
+            .WithSingleService(30)
+            .WithSingleEmployeeTom()
+            .WithSingleShiftForTom(shiftFrom, shiftTo)
+            .WithSingleCustomerPaul()
+            .WithSingleAppointmentForTom(appointmentStart, appointmentEnd)
+            .Build();
+        _sut = new(ctx, _nowService, _settings);
+        var tom = ctx.Employees!.Single();
+        var mensCut30Min = ctx.Services!.Single();
+        
+        // Act
+        var slots = await _sut.GetAvailableSlotsForEmployee(mensCut30Min.Id, tom.Id);
+        
+        // Assert
+        var times = slots.DaysSlots.SelectMany(x => x.Times).ToArray();
+        Assert.Equal(totalSlots, times.Length);
+        for (int idx = 0; idx < expectedTimes.Length; idx++)
+        {
+            Assert.Equal(DateTime.Parse(expectedTimes[idx]), times[idx]);
+        }
+    }
 }
