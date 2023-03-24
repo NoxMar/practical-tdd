@@ -27,11 +27,45 @@ public class SlotService
             throw new ArgumentException("Record for service not found", nameof(serviceId));
         }
 
-        var shifts = _context.Shifts!.Where(x => x.EmployeeId == employeeId);
+        var now = _nowService.Now;
+        var shifts = _context.Shifts!
+            .Where(x => x.EmployeeId == employeeId)
+            .Where(s => (s.Starting <= now && s.Ending > now) || s.Starting > now);
         if (!shifts.Any())
         {
             return new Slots(Array.Empty<DaySlots>());
         }
-        return null!;
+
+        List<DateTime> possibleAppointmentStarts = new();
+
+        foreach (var shift in shifts)
+        {
+            var possibleAppointmentStart = shift.Starting;
+            var possibleAppointmentEnd = possibleAppointmentStart.AddMinutes(service.AppointmentTimeSpanInMin);
+
+            while (possibleAppointmentEnd <= shift.Ending)
+            {
+                possibleAppointmentStarts.Add(possibleAppointmentStart);
+                
+                possibleAppointmentStart =  possibleAppointmentStart.AddMinutes(_settings.RoundUpInMin);
+                possibleAppointmentEnd = possibleAppointmentEnd.AddMinutes(_settings.RoundUpInMin);
+            }
+        }
+
+        var uniqueDays = possibleAppointmentStarts.Select(ti => ti.Date).Distinct();
+
+        var daySlotList = new List<DaySlots>();
+
+        foreach (var day in uniqueDays)
+        {
+            var startTimes = possibleAppointmentStarts
+                .Where(x => x.Date == day.Date)
+                .ToArray();
+            daySlotList.Add(new(day, startTimes));
+        }
+
+        Slots slots = new(daySlotList.ToArray());
+
+        return slots;
     }
 }

@@ -55,7 +55,7 @@ public class SlotsServiceTests
         Assert.Empty(times);
     }
 
-    [Theory(Skip = "TODO")]
+    [Theory]
     [InlineData(5, 0)]
     [InlineData(25, 0)]
     [InlineData(30, 1, "2022-10-03 09:00:00")]
