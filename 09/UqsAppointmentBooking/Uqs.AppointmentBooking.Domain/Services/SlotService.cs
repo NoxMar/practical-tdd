@@ -18,7 +18,7 @@ public class SlotService
         _settings = settings.Value;
     }
 
-    public async Task<Slots> GetAvailableSlotsForEmployee(int serviceId)
+    public async Task<Slots> GetAvailableSlotsForEmployee(int serviceId, int employeeId)
     {
         var service = await _context.Services!
             .FirstOrDefaultAsync(s => s.Id == serviceId);
