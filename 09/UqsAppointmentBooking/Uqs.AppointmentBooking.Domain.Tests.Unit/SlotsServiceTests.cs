@@ -27,7 +27,7 @@ public class SlotsServiceTests
         Assert.IsType<ArgumentException>(e);
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetAvailableSlotsForEmployee_NoShiftsForTomAndNoAppointmentsInSystem_NoSlots()
     {
         // Arrange

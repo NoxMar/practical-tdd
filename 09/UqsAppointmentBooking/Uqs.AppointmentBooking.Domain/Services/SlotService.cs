@@ -26,6 +26,12 @@ public class SlotService
         {
             throw new ArgumentException("Record for service not found", nameof(serviceId));
         }
+
+        var shifts = _context.Shifts!.Where(x => x.EmployeeId == employeeId);
+        if (!shifts.Any())
+        {
+            return new Slots(Array.Empty<DaySlots>());
+        }
         return null!;
     }
 }
