@@ -29,7 +29,7 @@ public class SlotsServiceTests
             _settings);
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetAvailableSlotsForEmployee_ServiceIdNoFound_ArgumentException()
     {
         // Arrange

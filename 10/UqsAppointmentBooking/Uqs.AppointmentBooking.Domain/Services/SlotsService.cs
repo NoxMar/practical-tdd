@@ -23,6 +23,12 @@ public class SlotsService : ISlotsService
 
     public async Task<Slots> GetAvailableSlotsForEmployee(string serviceId, string employeeId)
     {
-        throw new NotImplementedException();
+        var service = await _serviceRepository.GetActiveService(serviceId);
+        if (service is null)
+        {
+            throw new ArgumentException("Record not found", nameof(serviceId));
+        }
+
+        return null!;
     }
 }
