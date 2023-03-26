@@ -11,8 +11,6 @@ public class ServicesService
         _serviceRepository = serviceRepository;
     }
 
-    public async Task<IEnumerable> GetActiveServices()
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IEnumerable> GetActiveServices() 
+        => await _serviceRepository.GetActiveServices();
 }

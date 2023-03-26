@@ -9,7 +9,7 @@ public class ServicesServiceTests
     private readonly IServiceRepository _serviceRepository = Substitute.For<IServiceRepository>();
     private ServicesService? _sut;
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetActiveServices_NoServiceInTheSystem_NoServices()
     {
         // Arrange
