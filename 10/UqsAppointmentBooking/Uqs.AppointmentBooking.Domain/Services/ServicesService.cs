@@ -1,4 +1,5 @@
 using Uqs.AppointmentBooking.Domain.DomainObjects;
+using Uqs.AppointmentBooking.Domain.Report;
 using Uqs.AppointmentBooking.Domain.Repositories;
 
 namespace Uqs.AppointmentBooking.Domain.Services;
@@ -13,4 +14,9 @@ public class ServicesService
 
     public async Task<IEnumerable<Service>> GetActiveServices() 
         => await _serviceRepository.GetActiveServices();
+
+    public Task<Slots> GetAvailableSlotsForEmployee(string serviceId)
+    {
+        throw new NotImplementedException();
+    }
 }
