@@ -1,4 +1,4 @@
-using System.Collections;
+using Uqs.AppointmentBooking.Domain.DomainObjects;
 using Uqs.AppointmentBooking.Domain.Repositories;
 
 namespace Uqs.AppointmentBooking.Domain.Services;
@@ -11,6 +11,6 @@ public class ServicesService
         _serviceRepository = serviceRepository;
     }
 
-    public async Task<IEnumerable> GetActiveServices() 
+    public async Task<IEnumerable<Service>> GetActiveServices() 
         => await _serviceRepository.GetActiveServices();
 }

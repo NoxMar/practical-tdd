@@ -1,4 +1,5 @@
 using NSubstitute;
+using Uqs.AppointmentBooking.Domain.DomainObjects;
 using Uqs.AppointmentBooking.Domain.Repositories;
 using Uqs.AppointmentBooking.Domain.Services;
 
@@ -20,5 +21,25 @@ public class ServicesServiceTests
         
         // Assert
         Assert.Empty(actual);
+    }
+
+    [Fact]
+    public async Task GetActiveServices_TwoActiveServices_TwoServices()
+    {
+        // Arrange
+        _serviceRepository.GetActiveServices()
+            .Returns(new[]
+            {
+                new Service { IsActive = true },
+                new Service { IsActive = true }
+            });
+        _sut = new ServicesService(_serviceRepository);
+        var expected = 2;
+        
+        // Act
+        var actual = (await _sut.GetActiveServices()).ToArray();
+        
+        // Assert
+        Assert.Equal(expected, actual.Length);
     }
 }
