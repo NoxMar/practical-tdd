@@ -28,4 +28,17 @@ public class SlotsServiceTests
         _sut = new SlotsService(_serviceRepository, _employeeRepository, _appointmentRepository, _nowService,
             _settings);
     }
+
+    [Fact(Skip = "TODO")]
+    public async Task GetAvailableSlotsForEmployee_ServiceIdNoFound_ArgumentException()
+    {
+        // Arrange
+        
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => 
+                _sut.GetAvailableSlotsForEmployee("AServiceId", "AEmployeeId"));
+        
+        // Assert
+        Assert.IsType<ArgumentException>(exception);
+    }
 }
