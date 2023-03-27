@@ -60,4 +60,23 @@ public class SlotsServiceTests
         var ex = Assert.IsType<ArgumentException>(exception);
         Assert.Equal("employeeId", ex.ParamName);
     }
+
+    [Fact(Skip = "TODO")]
+    public async Task GetAvailableSlotsForEmployee_NoShiftsForTomAndNoAppointmentsInSystem_NoSlots()
+    {
+        // Arrange
+        var appointmentFrom = new DateTime(2022, 10, 3, 7, 0, 0);
+        _nowService.Now.Returns(appointmentFrom);
+        var tom = new Employee { Id = "Tom", Name = "Thomas Fringe", Shifts = Array.Empty<Shift>() };
+        var mensCut30Min = new Service { Id = "MensCut30Min", AppointmentTimeSpanInMin = 30 };
+        _serviceRepository.GetActiveService(Arg.Any<String>()).Returns(mensCut30Min);
+        _employeeRepository.GetItemAsync(Arg.Any<String>()).Returns(tom);
+        
+        // Act
+        var slots = await _sut.GetAvailableSlotsForEmployee(mensCut30Min.Id, tom.Id);
+        
+        // Assert
+        var times = slots.DaysSlots.SelectMany(s => s.Times);
+        Assert.Empty(times);
+    }
 }
