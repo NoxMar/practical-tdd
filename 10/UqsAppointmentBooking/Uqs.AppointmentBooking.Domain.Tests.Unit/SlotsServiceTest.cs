@@ -45,7 +45,7 @@ public class SlotsServiceTests
         Assert.Equal("serviceId", ex.ParamName);
     }
     
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetAvailableSlotsForEmployee_EmployeeNotFound_ArgumentException()
     {
         // Arrange

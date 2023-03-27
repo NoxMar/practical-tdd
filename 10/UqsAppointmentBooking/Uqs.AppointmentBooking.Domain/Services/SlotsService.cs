@@ -29,6 +29,12 @@ public class SlotsService : ISlotsService
             throw new ArgumentException("Record not found", nameof(serviceId));
         }
 
+        var employee = await _employeeRepository.GetItemAsync(employeeId);
+        if (employee is null)
+        {
+            throw new ArgumentException("Record not found", nameof(employeeId));
+        }
+
         return null!;
     }
 }
