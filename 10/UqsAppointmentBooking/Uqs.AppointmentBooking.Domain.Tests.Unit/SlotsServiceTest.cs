@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using Uqs.AppointmentBooking.Domain.DomainObjects;
 using Uqs.AppointmentBooking.Domain.Repositories;
 using Uqs.AppointmentBooking.Domain.Services;
 
@@ -33,12 +34,14 @@ public class SlotsServiceTests
     public async Task GetAvailableSlotsForEmployee_ServiceIdNoFound_ArgumentException()
     {
         // Arrange
-        
+        _employeeRepository.GetItemAsync("AEmployeeId")
+            .Returns(new Employee{Id = "AEmployeeId"});
         // Act
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => 
                 _sut.GetAvailableSlotsForEmployee("AServiceId", "AEmployeeId"));
         
         // Assert
-        Assert.IsType<ArgumentException>(exception);
+        var ex = Assert.IsType<ArgumentException>(exception);
+        Assert.Equal("serviceId", ex.ParamName);
     }
 }
