@@ -35,6 +35,11 @@ public class SlotsService : ISlotsService
             throw new ArgumentException("Record not found", nameof(employeeId));
         }
 
+        if (!employee.Shifts!.Any())
+        {
+            return new Slots(Array.Empty<DaySlots>());
+        }
+
         return null!;
     }
 }

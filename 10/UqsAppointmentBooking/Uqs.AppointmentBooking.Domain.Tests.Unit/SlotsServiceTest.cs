@@ -61,7 +61,7 @@ public class SlotsServiceTests
         Assert.Equal("employeeId", ex.ParamName);
     }
 
-    [Fact(Skip = "TODO")]
+    [Fact]
     public async Task GetAvailableSlotsForEmployee_NoShiftsForTomAndNoAppointmentsInSystem_NoSlots()
     {
         // Arrange
