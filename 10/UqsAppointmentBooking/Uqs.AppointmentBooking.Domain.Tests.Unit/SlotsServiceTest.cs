@@ -44,4 +44,20 @@ public class SlotsServiceTests
         var ex = Assert.IsType<ArgumentException>(exception);
         Assert.Equal("serviceId", ex.ParamName);
     }
+    
+    [Fact(Skip = "TODO")]
+    public async Task GetAvailableSlotsForEmployee_EmployeeNotFound_ArgumentException()
+    {
+        // Arrange
+        _serviceRepository.GetActiveService("AServiceId")
+            .Returns(new Service { Id = "AServiceId", IsActive = true });
+        
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _sut.GetAvailableSlotsForEmployee("AServiceId", "AEmployeeId"));
+        
+        // Assert
+        var ex = Assert.IsType<ArgumentException>(exception);
+        Assert.Equal("employeeId", ex.ParamName);
+    }
 }
