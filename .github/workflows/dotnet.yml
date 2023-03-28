@@ -15,8 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ch10/UqsAppointmentBooking
-
+        working-directory: ./10/UqsAppointmentBooking
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
