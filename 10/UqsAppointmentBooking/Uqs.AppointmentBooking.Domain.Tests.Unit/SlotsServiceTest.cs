@@ -83,6 +83,8 @@ public class SlotsServiceTests
     [Theory]
     [InlineData(5, 0)]
     [InlineData(25, 0)]
+    [InlineData(30, 1, "2022-10-03 09:00:00")]
+    [InlineData(35, 2, "2022-10-03 09:00:00", "2022-10-03 09:05:00")]
     public async Task GetAvailableSlotsForEmployee_OneShiftAndNoExistingAppointments_VaryingSlots(int serviceDuration,
         int totalSlots, params string[] expectedTimes)
     {
