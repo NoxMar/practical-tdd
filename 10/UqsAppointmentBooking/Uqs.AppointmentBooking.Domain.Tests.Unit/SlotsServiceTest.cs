@@ -80,7 +80,7 @@ public class SlotsServiceTests
         Assert.Empty(times);
     }
 
-    [Theory(Skip = "TODO")]
+    [Theory]
     [InlineData(5, 0)]
     [InlineData(25, 0)]
     public async Task GetAvailableSlotsForEmployee_OneShiftAndNoExistingAppointments_VaryingSlots(int serviceDuration,
