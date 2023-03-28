@@ -42,17 +42,4 @@ public class ServicesServiceTests
         // Assert
         Assert.Equal(expected, actual.Length);
     }
-
-    [Fact]
-    public async Task GetAvailableSlotsForEmployee_ServiceIdNoFound_ArgumentException()
-    {
-        // Arrange
-        
-        // Act
-        var exception =
-            await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetAvailableSlotsForEmployee("AServiceId"));
-        
-        // Assert
-        Assert.IsType<ArgumentException>(exception);
-    }
 }

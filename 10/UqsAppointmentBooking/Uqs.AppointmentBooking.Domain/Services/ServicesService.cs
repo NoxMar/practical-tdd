@@ -14,9 +14,4 @@ public class ServicesService
 
     public async Task<IEnumerable<Service>> GetActiveServices() 
         => await _serviceRepository.GetActiveServices();
-
-    public Task<Slots> GetAvailableSlotsForEmployee(string serviceId)
-    {
-        throw new NotImplementedException();
-    }
 }
