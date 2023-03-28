@@ -79,4 +79,44 @@ public class SlotsServiceTests
         var times = slots.DaysSlots.SelectMany(s => s.Times);
         Assert.Empty(times);
     }
+
+    [Theory(Skip = "TODO")]
+    [InlineData(5, 0)]
+    [InlineData(25, 0)]
+    public async Task GetAvailableSlotsForEmployee_OneShiftAndNoExistingAppointments_VaryingSlots(int serviceDuration,
+        int totalSlots, params string[] expectedTimes)
+    {
+        // Arrange
+        DateTime appointmentFrom = new(2022, 10, 3, 7, 0, 0);
+        _nowService.Now.Returns(appointmentFrom);
+        DateTime shiftFrom = new(2022, 10, 3, 9, 0, 0);
+        DateTime shiftTo = shiftFrom.AddMinutes(serviceDuration);
+        Employee tom = new(){ Id = "Tom", Name = "Thomas Fringe", Shifts = new []
+        {
+            new Shift { Starting = shiftFrom, Ending = shiftTo }
+        }};
+        Service mens30Min = new() { Id = "MensCut30Min", AppointmentTimeSpanInMin = 30, IsActive = true };
+        var tomsAppointments = Array.Empty<Appointment>(); 
+
+        _serviceRepository.GetActiveService(Arg.Any<string>())
+            .ReturnsForAnyArgs(mens30Min);
+        _employeeRepository.GetItemAsync(Arg.Any<string>())
+            .ReturnsForAnyArgs(tom);
+        _appointmentRepository.GetAppointmentsByEmployeeIdAsync(Arg.Is("Tom"))
+            .Returns(Task.FromResult((IEnumerable<Appointment>) tomsAppointments));
+
+        _sut = new SlotsService(_serviceRepository, _employeeRepository, _appointmentRepository, _nowService,
+            _settings);
+        
+        // Act
+        var slots = await _sut.GetAvailableSlotsForEmployee(mens30Min.Id, tom.Id);
+        
+        // Assert
+        var slotTimes = slots.DaysSlots.SelectMany(s => s.Times).ToArray();
+        Assert.Equal(totalSlots, slotTimes.Length);
+        for (int idx = 0; idx < expectedTimes.Length; idx++)
+        {
+            Assert.Equal(DateTime.Parse(expectedTimes[idx]), slotTimes[idx]);
+        }
+    }
 }
