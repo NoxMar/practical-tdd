@@ -1,3 +1,4 @@
+using FluentAssertions;
 using NSubstitute;
 using Uqs.AppointmentBooking.Domain.DomainObjects;
 using Uqs.AppointmentBooking.Domain.Repositories;
@@ -20,7 +21,7 @@ public class ServicesServiceTests
         var actual = await _sut.GetActiveServices();
         
         // Assert
-        Assert.Empty(actual);
+        actual.Should().BeEmpty();
     }
 
     [Fact]
@@ -40,6 +41,6 @@ public class ServicesServiceTests
         var actual = (await _sut.GetActiveServices()).ToArray();
         
         // Assert
-        Assert.Equal(expected, actual.Length);
+        actual.Length.Should().Be(expected);
     }
 }
