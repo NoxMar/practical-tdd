@@ -36,7 +36,7 @@ public class SlotsService : ISlotsService
         }
 
         var shifts = employee.Shifts!
-            .Where(s => (s.Starting <= _now && s.Ending > _now) || s.Starting > _now)
+            .Where(s => (s.Starting <= _now && s.Ending > _now) && s.Starting > _now)
             .ToArray();
 
         if (!shifts.Any())
